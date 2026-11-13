@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Broń Komputer - v11 WSZYSTKO</title>
+<style>
+* { box-sizing: border-box; }
+body { margin:0; min-height:100vh; background: linear-gradient(180deg,#020617,#0f172a); display:flex; flex-direction:column; align-items:center; font-family:'Segoe UI',sans-serif; color:white; padding:10px; }
+.card { background: rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); border-radius:18px; padding:12px 14px; width:100%; max-width:430px; }
+.top { display:flex; justify-content:space-between; align-items:center; gap:8px; }
+.logo { font-size:19px; font-weight:900; line-height:1.05; }
+.logo span { color:#22d3ee; }
+.stats { display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-end; }
+.pill { background:#fff; color:#111; border-radius:999px; padding:6px 10px; font-weight:800; font-size:13px; }
+.pill.combo { background:#a5f3fc; }
+.pill.level { background:#fde68a; }
+.pill.boost { background:#f0abfc; display:none; }
+.pill.perm { background:#86efac; display:none; }
+.pill.coins { background:#fde047; }
+.hearts { font-size:16px; letter-spacing:2px; margin-top:6px; }
+.bar-wrap { background:rgba(255,255,255,0.15); height:8px; border-radius:99px; margin-top:8px; overflow:hidden; }
+.bar { height:100%; background:linear-gradient(90deg,#22d3ee,#a855f7,#ef4444); width:10%; transition:width 0.3s; }
+.bar-label { font-size:11px; opacity:0.7; margin-top:4px; text-align:center; }
+.reward { margin-top:10px; background:linear-gradient(90deg, rgba(250,204,21,0.2), rgba(240,171,252,0.2)); border:1px solid rgba(250,204,21,0.5); border-radius:12px; padding:10px 12px; text-align:center; }
+.reward h3 { margin:0; font-size:14px; }
+.reward p { margin:4px 0 8px; font-size:12px; opacity:0.85; line-height:1.4; }
+.reward button { background:#facc15; color:#111; padding:9px 16px; border-radius:999px; border:none; font-weight:900; cursor:pointer; font-size:13px; width:100%; }
+.reward button:disabled { background:#52525b; color:#a1a1aa; cursor:not-allowed; }
+.reward .streak { display:flex; gap:4px; justify-content:center; margin:6px 0; }
+.reward .day { width:32px; height:32px; border-radius:8px; background:rgba(255,255,255,0.15); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; }
+.reward .day.done { background:#22c55e; color:white; }
+.reward .day.today { border:2px solid #facc15; }
+canvas { width:100%; max-width:400px; height:auto; aspect-ratio:4/5; display:block; margin:10px auto 0; background: linear-gradient(180deg,#0b1120 0%, #1e293b 45%, #0f172a 100%); border-radius:14px; }
+.controls { display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; justify-content:center; }
+button, .wa-btn { padding:10px 16px; border-radius:999px; border:none; font-weight:800; cursor:pointer; font-size:14px; text-decoration:none; display:inline-block; text-align:center; }
+.primary { background:#22d3ee; color:#111; }
+.ghost { background:rgba(255,255,255,0.12); color:white; border:1px solid rgba(255,255,255,0.2); }
+.wa-btn { background:#25D366; color:#fff; }
+.wa-box { margin-top:12px; background:rgba(37,211,102,0.12); border:1px solid rgba(37,211,102,0.35); border-radius:12px; padding:10px 12px; text-align:center; }
+.wa-box p { margin:0 0 8px; font-size:13px; }
+.hint { font-size:12.5px; opacity:0.75; text-align:center; line-height:1.5; margin:8px 0 0; }
+.touch { display:none; gap:8px; margin-top:10px; width:100%; }
+.touch button { flex:1; padding:16px; font-size:20px; background:rgba(255,255,255,0.12); color:white; border:1px solid rgba(255,255,255,0.25); border-radius:12px; }
+.shop { margin-top:12px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); border-radius:14px; padding:12px; }
+.shop h3 { margin:0 0 4px; font-size:15px; text-align:center; }
+.shop-info { text-align:center; font-size:12px; opacity:0.85; margin-bottom:10px; line-height:1.5; }
+.shop-info b { color:#fde047; }
+.skin-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.skin { background:rgba(255,255,255,0.08); border:2px solid rgba(255,255,255,0.12); border-radius:12px; padding:10px 8px; text-align:center; }
+.skin.equipped { border-color:#22c55e; background:rgba(34,197,94,0.15); }
+.skin .icon { font-size:28px; }
+.skin .name { font-size:12px; font-weight:800; margin:4px 0 2px; }
+.skin .price { font-size:11px; opacity:0.8; margin-bottom:6px; }
+.skin .desc { font-size:10px; opacity:0.7; margin-bottom:6px; line-height:1.3; }
+.skin button { width:100%; padding:7px; font-size:12px; border-radius:999px; border:none; font-weight:800; cursor:pointer; }
+.skin button.buy { background:#facc15; color:#111; }
+.skin button.equip { background:#22d3ee; color:#111; }
+.skin button.on { background:#22c55e; color:white; }
+.skin button:disabled { background:#52525b; color:#a1a1aa; }
+.sponsor { margin:10px 0 0; background:linear-gradient(90deg, rgba(168,85,247,0.25), rgba(34,211,238,0.25)); border:1px solid rgba(168,85,247,0.5); border-radius:12px; padding:10px 12px; text-align:center; }
+.sponsor span { font-size:11px; opacity:0.8; letter-spacing:1px; }
+.sponsor a { display:block; color:white; font-weight:900; font-size:16px; text-decoration:none; margin-top:2px; }
+.sponsor a:hover { text-decoration:underline; }
+.sponsor small { font-size:11px; opacity:0.7; }
+@media (max-width:600px){ .touch{display:flex;} }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="top">
+    <div class="logo">💻 BROŃ KOMPUTER<br><span>VS WIRUSY</span></div>
+    <div class="stats">
+      <div class="pill">⭐ <span id="score">0</span></div>
+      <div class="pill coins">🪙 <span id="coins">0</span></div>
+      <div class="pill combo">🔥 x<span id="combo">1</span></div>
+      <div class="pill level">LVL <span id="level">1</span></div>
+      <div class="pill boost" id="boostPill">⚡ BOOST x2: <span id="boostTime">60</span>s</div>
+      <div class="pill perm" id="permPill">🏆 STAŁY +0.5x</div>
+    </div>
+  </div>
+  <div class="sponsor">
+    <span>💰 SPONSOR GRY</span>
+    <a href="https://pi-coin.serv00.net:61631/" target="_blank" rel="noopener">🪙 Pi Coin - Kliknij tutaj!</a>
+    <small>pi-coin.serv00.net:61631</small>
+  </div>
+  <div class="hearts" id="hearts">❤️❤️❤️❤️❤️</div>
+  <div class="bar-wrap"><div class="bar" id="diffBar"></div></div>
+  <div class="bar-label" id="diffLabel">Trudność: ŁATWO - wirusów mało</div>
+  <div class="reward" id="rewardBox">
+    <h3>🎁 NAGRODA ZA LOGOWANIE</h3>
+    <div class="streak" id="streakDays"></div>
+    <p id="rewardText">Odbierz dzisiejszą nagrodę!</p>
+    <button id="claimBtn" onclick="claimReward()">🎁 ODBIERZ NAGRODĘ</button>
+  </div>
+  <canvas id="game" width="400" height="500"></canvas>
+  <div class="controls">
+    <button class="primary" onclick="resetGame()">↻ Restart [SPACJA]</button>
+    <button class="ghost" id="soundBtn" onclick="toggleSound()">🔊 Dźwięk</button>
+    <button class="ghost" onclick="toggleMusic()">🎵 Muzyka</button>
+  </div>
+  <div class="touch">
+    <button ontouchstart="holdLeft=true" ontouchend="holdLeft=false">⬅️</button>
+    <button ontouchstart="holdRight=true" ontouchend="holdRight=false">➡️</button>
+  </div>
+  <div class="shop">
+    <h3>🛍️ SKLEP ZE SKÓRKAMI</h3>
+    <div class="shop-info">Masz <b><span id="coins2">0</span> monet</b> • Rekord: <b><span id="best">0</span></b><br>Nowy rekord = <b>PODWÓJNE monety!</b> 🪙x2<br>Każda skórka zmienia: gracza, wirusa, pliki i antywirus!</div>
+    <div class="skin-grid" id="skinGrid"></div>
+  </div>
+  <div class="wa-box">
+    <p>Podoba Ci się gra? Obserwuj mój kanał po więcej!</p>
+    <a class="wa-btn" href="https://whatsapp.com/channel/0029VbE8tys9MF8u9ZxpVy3s" target="_blank" rel="noopener">💬 Obserwuj na WhatsApp →</a>
+  </div>
+  <div class="sponsor">
+    <span>💰 SPONSOR</span>
+    <a href="https://pi-coin.serv00.net:61631/" target="_blank" rel="noopener">🪙 Sprawdź Pi Coin →</a>
+  </div>
+  <p class="hint">Łap: 🔒 +10, 💾 +10, ⚡ +30 • Unikaj wirusów = -1 życie<br>Loguj się codziennie = boosty i większe rekordy!</p>
+</div>
+<script>
+const c = document.getElementById('game');
+const ctx = c.getContext('2d');
+let score, lives, combo, comboStreak, gameOver, player, items, particles, keys, holdLeft, holdRight, frame, startTime, level;
+let soundOn = true, musicOn = false, audioCtx = null, musicTimer = null;
+let bgDots = [];
+const SKINS = [
+  { id:'classic', name:'Klasyczny', icon:'💻', price:0, type:'pc', body1:'#1f2937', body2:'#030712', screen:'#22d3ee', glow:'rgba(34,211,238,0.4)', virus:'🦠', file:'📁', shield:'🛡️', desc:'PC • 🦠 📁 🛡️' },
+  { id:'laptop', name:'Laptop Pro', icon:'💻', price:200, type:'laptop', body1:'#334155', body2:'#0f172a', screen:'#38bdf8', glow:'rgba(56,189,248,0.6)', virus:'🦠', file:'💾', shield:'🔒', desc:'LAPTOP • 🦠 💾 🔒' },
+  { id:'hacker', name:'Haker', icon:'👾', price:350, type:'pc', body1:'#14532d', body2:'#052e16', screen:'#4ade80', glow:'rgba(74,222,128,0.6)', virus:'👾', file:'💾', shield:'🔒', desc:'PC • 👾 💾 🔒' },
+  { id:'corona', name:'Koronawirus', icon:'🦠', price:400, type:'laptop', body1:'#7f1d1d', body2:'#450a0a', screen:'#f87171', glow:'rgba(248,113,113,0.6)', virus:'🦠', file:'💾', shield:'🔒', desc:'LAPTOP BIO • 🦠 💾 🔒' },
+  { id:'retro', name:'Retro', icon:'🕹️', price:500, type:'pc', body1:'#854d0e', body2:'#422006', screen:'#facc15', glow:'rgba(250,204,21,0.6)', virus:'🐛', file:'💾', shield:'🔒', desc:'PC RETRO • 🐛 💾 🔒' },
+  { id:'galaxy', name:'Galaktyka', icon:'🌌', price:1000, type:'laptop', body1:'#4c1d95', body2:'#2e1065', screen:'#a78bfa', glow:'rgba(167,139,250,0.7)', virus:'👾', file:'💾', shield:'🔒', desc:'LAPTOP • 👾 💾 🔒' },
+  { id:'cyberpunk', name:'Cyberpunk', icon:'🤖', price:600, type:'laptop', body1:'#831843', body2:'#500724', screen:'#f472b6', glow:'rgba(244,114,182,0.7)', virus:'🤖', file:'💾', shield:'🔐', desc:'LAPTOP • 🤖 💾 🔐' },
+  { id:'zombie', name:'Zombie', icon:'🧟', price:550, type:'pc', body1:'#365314', body2:'#1a2e05', screen:'#a3e635', glow:'rgba(163,230,53,0.6)', virus:'🧟', file:'💾', shield:'🧪', desc:'PC • 🧟 💾 🧪' },
+  { id:'candy', name:'Cukierek', icon:'🍬', price:450, type:'laptop', body1:'#be185d', body2:'#500724', screen:'#f9a8d4', glow:'rgba(249,168,212,0.7)', virus:'🍬', file:'🍭', shield:'🍩', desc:'LAPTOP • 🍬 🍭 🍩' },
+  { id:'ninja', name:'Ninja', icon:'🥷', price:700, type:'pc', body1:'#111827', body2:'#000000', screen:'#e5e7eb', glow:'rgba(229,231,235,0.5)', virus:'🥷', file:'📀', shield:'🗡️', desc:'PC • 🥷 📀 🗡️' },
+  { id:'police', name:'Policja', icon:'🚔', price:650, type:'laptop', body1:'#1e40af', body2:'#172554', screen:'#60a5fa', glow:'rgba(96,165,250,0.7)', virus:'🦹', file:'📂', shield:'🚔', desc:'LAPTOP • 🦹 📂 🚔' },
+  { id:'doctor', name:'Doktor', icon:'💉', price:750, type:'pc', body1:'#0f766e', body2:'#134e4a', screen:'#5eead4', glow:'rgba(94,234,212,0.6)', virus:'🦠', file:'💊', shield:'💉', desc:'PC • 🦠 💊 💉' },
+];
+let shopData = JSON.parse(localStorage.getItem('pc_shop_v2') || '{"coins":0,"best":0,"owned":["classic"],"equipped":"classic"}');
+function saveShop(){ localStorage.setItem('pc_shop_v2', JSON.stringify(shopData)); }
+function currentSkin(){ return SKINS.find(s=>s.id===shopData.equipped) || SKINS[0]; }
+function updateShopUI(){
+  document.getElementById('coins').textContent = shopData.coins;
+  document.getElementById('coins2').textContent = shopData.coins;
+  document.getElementById('best').textContent = shopData.best;
+  const grid = document.getElementById('skinGrid');
+  grid.innerHTML = '';
+  SKINS.forEach(s=>{
+    const owned = shopData.owned.includes(s.id);
+    const isEq = shopData.equipped === s.id;
+    const div = document.createElement('div');
+    div.className = 'skin' + (isEq ? ' equipped' : '');
+    div.innerHTML = `<div class="icon">${s.icon}</div><div class="name">${s.name}</div><div class="desc">${s.desc}</div><div class="price">${s.price===0?'ZA DARMO':s.price+' 🪙'}</div>`;
+    const btn = document.createElement('button');
+    if(isEq){ btn.className='on'; btn.textContent='✅ ZAŁOŻONA'; btn.disabled=true; }
+    else if(owned){ btn.className='equip'; btn.textContent='Załóż'; btn.onclick=()=>{ shopData.equipped=s.id; saveShop(); updateShopUI(); sBonus(); }; }
+    else { btn.className='buy'; btn.textContent=`Kup za ${s.price} 🪙`; if(shopData.coins < s.price) btn.disabled=true; btn.onclick=()=>{ if(shopData.coins>=s.price){ shopData.coins-=s.price; shopData.owned.push(s.id); shopData.equipped=s.id; saveShop(); updateShopUI(); alert(`🎉 Kupiłeś skórkę: ${s.name}!\nTeraz: ${s.desc}`); sBonus(); } }; }
+    div.appendChild(btn);
+    grid.appendChild(div);
+  });
+}
+function awardCoins(){
+  const isNewBest = score > shopData.best;
+  let earned = score;
+  if(isNewBest){ earned = score * 2; shopData.best = score; }
+  shopData.coins += earned;
+  saveShop(); updateShopUI();
+  if(score > 0){
+    if(isNewBest) alert(`🏆 NOWY REKORD! ${score} pkt\nDostałeś PODWÓJNE monety: +${earned} 🪙\nMasz teraz ${shopData.coins} monet!`);
+    else alert(`🎮 Koniec gry! Wynik: ${score}\nDostałeś +${earned} 🪙\nRekord: ${shopData.best} • Masz: ${shopData.coins} monet`);
+  }
+}
+let rewardData = JSON.parse(localStorage.getItem('pc_reward') || '{"streak":0,"lastClaim":"","permBoost":0}');
+let boostUntil = 0; let boostActive = false;
+function todayStr(){ return new Date().toISOString().slice(0,10); }
+function renderReward(){
+  const daysEl = document.getElementById('streakDays'); daysEl.innerHTML = '';
+  for(let i=1;i<=7;i++){ const d=document.createElement('div'); d.className='day'+(i<=rewardData.streak?' done':'')+(i===rewardData.streak+1?' today':''); d.textContent=i; daysEl.appendChild(d); }
+  const claimedToday = rewardData.lastClaim === todayStr();
+  const btn = document.getElementById('claimBtn'); const txt = document.getElementById('rewardText');
+  if(claimedToday){ btn.disabled=true; btn.textContent='✅ ODEBRANO - wróć jutro!'; txt.textContent=`Seria: ${rewardData.streak} dni 🔥 Stały bonus: +${rewardData.permBoost.toFixed(1)}x`; }
+  else { btn.disabled=false; let nr=''; if(rewardData.streak+1===3) nr='Dzień 3 = STAŁY +0.5x na zawsze! 🏆'; else if(rewardData.streak+1===7) nr='Dzień 7 = STAŁY +1.0x na zawsze! 👑'; else nr='Dziś: BOOST x2 na 60 sekund ⚡'; btn.textContent='🎁 ODBIERZ NAGRODĘ'; txt.textContent=`Dzień ${rewardData.streak+1} z 7 • ${nr} • Seria: ${rewardData.streak} dni`; }
+  if(rewardData.permBoost>0) document.getElementById('permPill').style.display='block';
+}
+function claimReward(){
+  if(rewardData.lastClaim===todayStr()) return;
+  const yesterday=new Date(Date.now()-86400000).toISOString().slice(0,10);
+  if(rewardData.lastClaim!==yesterday) rewardData.streak=0;
+  rewardData.streak++; rewardData.lastClaim=todayStr();
+  if(rewardData.streak===3){ rewardData.permBoost+=0.5; alert('🏆 Dzień 3! Odblokowałeś STAŁY +0.5x na zawsze!'); }
+  else if(rewardData.streak===7){ rewardData.permBoost+=0.5; alert('👑 Dzień 7! Masz teraz STAŁY +1.0x!'); rewardData.streak=0; }
+  else { boostUntil=Date.now()+60000; boostActive=true; alert('⚡ BOOST x2 na 60 sekund aktywny!'); }
+  localStorage.setItem('pc_reward', JSON.stringify(rewardData)); renderReward(); sBonus();
+}
+function getTotalMultiplier(){ let m=combo; if(rewardData.permBoost>0) m+=rewardData.permBoost; if(boostActive && Date.now()<boostUntil) m*=2; return m; }
+function updateBoostUI(){ if(boostActive){ const left=Math.ceil((boostUntil-Date.now())/1000); if(left<=0){ boostActive=false; document.getElementById('boostPill').style.display='none'; } else { document.getElementById('boostPill').style.display='block'; document.getElementById('boostTime').textContent=left; } } }
+renderReward();
+function getAudio(){ if(!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)(); if(audioCtx.state==='suspended') audioCtx.resume(); return audioCtx; }
+function tone(freq,dur,type='sine',vol=0.12,slide=null,delay=0){ if(!soundOn) return; try{ const ac=getAudio(); const t=ac.currentTime+delay; const o=ac.createOscillator(),g=ac.createGain(); o.type=type; o.frequency.setValueAtTime(freq,t); if(slide) o.frequency.exponentialRampToValueAtTime(slide,t+dur); g.gain.setValueAtTime(vol,t); g.gain.exponentialRampToValueAtTime(0.001,t+dur); o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t+dur); }catch(e){} }
+const sGood=()=>{ tone(520,0.08,'sine',0.18); tone(780,0.12,'sine',0.18,null,0.06); };
+const sBonus=()=>{ tone(660,0.08,'sine',0.18); tone(880,0.08,'sine',0.18,null,0.07); tone(1100,0.15,'sine',0.18,null,0.14); };
+const sBad=()=>tone(180,0.3,'sawtooth',0.12,90);
+const sLevel=()=>{ tone(600,0.1,'square',0.08); tone(800,0.15,'square',0.08,null,0.1); };
+const sOver=()=>{ tone(400,0.15,'triangle',0.18); tone(300,0.15,'triangle',0.18,null,0.15); tone(180,0.35,'triangle',0.2,null,0.3); };
+const sStart=()=>{ tone(440,0.1,'sine',0.15); tone(660,0.12,'sine',0.15,null,0.1); };
+function toggleSound(){ soundOn=!soundOn; document.getElementById('soundBtn').textContent=soundOn?'🔊 Dźwięk':'🔇 Cicho'; if(soundOn) sGood(); }
+function toggleMusic(){ musicOn=!musicOn; if(musicOn){ musicTimer=setInterval(()=>{ if(!gameOver) tone([523,659,784,659][Math.floor(Math.random()*4)],0.18,'sine',0.04); },500); } else clearInterval(musicTimer); }
+function resetGame(){ score=0; combo=1; comboStreak=0; lives=5; gameOver=false; frame=0; level=1; startTime=Date.now(); player={x:155,y:435,w:92,h:60,speed:8.2}; items=[]; particles=[]; keys={}; holdLeft=false; holdRight=false; bgDots=Array.from({length:45},()=>({x:Math.random()*400,y:Math.random()*500,s:Math.random()*2+1,v:Math.random()*0.6+0.2,c:Math.random()>0.5?'#22d3ee':'#a855f7'})); document.getElementById('score').textContent=score; document.getElementById('combo').textContent=combo; document.getElementById('level').textContent=level; updateHearts(); updateShopUI(); sStart(); }
+function updateHearts(){ document.getElementById('hearts').textContent='❤️'.repeat(lives)+'🤍'.repeat(5-lives); }
+resetGame();
+document.addEventListener('keydown',e=>{ getAudio(); if(e.code==='Space'){ e.preventDefault(); if(gameOver) resetGame(); } if(e.key==='m'||e.key==='M') toggleSound(); if(e.key==='n'||e.key==='N') toggleMusic(); keys[e.key]=true; });
+document.addEventListener('keyup',e=>keys[e.key]=false);
+function moveTouch(e){ e.preventDefault(); getAudio(); let x=e.touches[0].clientX-c.getBoundingClientRect().left; player.x=Math.max(0,Math.min(400-player.w,x-player.w/2)); }
+c.addEventListener('touchstart',moveTouch); c.addEventListener('touchmove',moveTouch);
+function getDifficulty(){ const elapsed=(Date.now()-startTime)/1000; const lvl=Math.min(10,1+Math.floor(elapsed/10)); const spawnEvery=Math.max(30,70-(lvl-1)*4.5); const virusChance=Math.min(0.62,0.33+(lvl-1)*0.032); const speedMul=1+(lvl-1)*0.13; return {lvl,spawnEvery,virusChance,speedMul,elapsed}; }
+function spawnItem(diff){ const r=Math.random(); let type='shield'; if(r<diff.virusChance) type='virus'; else if(r<diff.virusChance+0.06) type='bonus'; else if(r<diff.virusChance+0.32) type='file'; const baseSpeed=(1.0+Math.random()*0.6)*diff.speedMul+score*0.0025; items.push({x:Math.random()*360,y:-30,speed:baseSpeed,rot:Math.random()*6,type}); }
+function addParticles(x,y,color,count=10){ for(let i=0;i<count;i++) particles.push({x,y,vx:(Math.random()-0.5)*4,vy:Math.random()*-3-1,life:32,col:color,size:Math.random()*4+2}); }
+function drawBackground(){ bgDots.forEach(d=>{ ctx.globalAlpha=0.35; ctx.fillStyle=d.c; ctx.fillRect(d.x,d.y,d.s,d.s*3); d.y+=d.v; if(d.y>500){ d.y=-10; d.x=Math.random()*400; } ctx.globalAlpha=1; }); ctx.strokeStyle='rgba(34,211,238,0.08)'; ctx.lineWidth=1; for(let y=0;y<500;y+=50){ ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(400,y); ctx.stroke(); } ctx.fillStyle='#020617'; ctx.fillRect(0,478,400,22); ctx.fillStyle='#22d3ee'; ctx.font='bold 11px sans-serif'; ctx.textAlign='center'; ctx.fillText('FIREWALL: ON  •  ANTIVIRUS: AKTYWNY',200,492); ctx.textAlign='left'; }
+function drawPlayer(){
+  const t=Date.now()/1000; const skin=currentSkin();
+  ctx.save();
+  ctx.fillStyle=skin.glow; ctx.beginPath(); ctx.ellipse(player.x+player.w/2,player.y+58,player.w/2+8,8,0,0,7); ctx.fill();
+  if(skin.type==='laptop'){
+    const g=ctx.createLinearGradient(player.x,player.y,player.x,player.y+44); g.addColorStop(0,skin.body1); g.addColorStop(1,skin.body2);
+    ctx.fillStyle=g; ctx.shadowColor=skin.glow; ctx.shadowBlur=12;
+    ctx.beginPath(); ctx.roundRect(player.x,player.y,player.w,42,6); ctx.fill(); ctx.shadowBlur=0;
+    ctx.fillStyle=lives<=2?'#ef4444':skin.screen; ctx.beginPath(); ctx.roundRect(player.x+5,player.y+5,player.w-10,32,4); ctx.fill();
+    ctx.fillStyle='#020617'; ctx.beginPath(); ctx.roundRect(player.x+9,player.y+9,player.w-18,24,3); ctx.fill();
+    ctx.fillStyle=lives<=2?'#ef4444':skin.screen; ctx.font='bold 11px sans-serif'; ctx.textAlign='center';
+    ctx.fillText(lives<=2?'⚠️ UWAGA!':'💻 LAPTOP',player.x+player.w/2,player.y+20);
+    ctx.fillStyle='#ffffff'; ctx.font='8px sans-serif'; ctx.fillText(lives<=2?'WIRUS ATAKUJE!':'SYSTEM 100% OK',player.x+player.w/2,player.y+30);
+    ctx.fillStyle=skin.body1; ctx.beginPath(); ctx.roundRect(player.x-8,player.y+42,player.w+16,14,4); ctx.fill();
+    ctx.fillStyle='rgba(255,255,255,0.25)';
+    for(let i=0;i<5;i++){ ctx.fillRect(player.x+2+i*17, player.y+45, 13, 3); ctx.fillRect(player.x+2+i*17, player.y+50, 13, 3); }
+    ctx.fillStyle='rgba(255,255,255,0.2)'; ctx.fillRect(player.x+12,player.y+38,player.w-24,2);
+    ctx.fillStyle=lives<=2?'#ef4444':'#4ade80'; ctx.fillRect(player.x+12,player.y+38,(player.w-24)*(lives/5),2);
+  } else {
+    const g=ctx.createLinearGradient(player.x,player.y,player.x,player.y+44); g.addColorStop(0,skin.body1); g.addColorStop(1,skin.body2);
+    ctx.fillStyle=g; ctx.shadowColor=skin.glow; ctx.shadowBlur=12; ctx.beginPath(); ctx.roundRect(player.x,player.y,player.w,44,8); ctx.fill(); ctx.shadowBlur=0;
+    ctx.fillStyle=lives<=2?'#ef4444':skin.screen; ctx.beginPath(); ctx.roundRect(player.x+5,player.y+5,player.w-10,34,5); ctx.fill();
+    ctx.fillStyle='#020617'; ctx.beginPath(); ctx.roundRect(player.x+9,player.y+9,player.w-18,26,4); ctx.fill();
+    ctx.fillStyle=lives<=2?'#ef4444':skin.screen; ctx.font='bold 11px sans-serif'; ctx.textAlign='center'; ctx.fillText(lives<=2?'⚠️ UWAGA!':'🛡️ PC',player.x+player.w/2,player.y+22);
+    ctx.fillStyle='#ffffff'; ctx.font='8px sans-serif'; ctx.fillText(lives<=2?'WIRUS ATAKUJE!':'SYSTEM 100% OK',player.x+player.w/2,player.y+33);
+    ctx.fillStyle='rgba(255,255,255,0.2)'; ctx.fillRect(player.x+12,player.y+38,player.w-24,2); ctx.fillStyle=lives<=2?'#ef4444':'#4ade80'; ctx.fillRect(player.x+12,player.y+38,(player.w-24)*(lives/5),2);
+    ctx.fillStyle='#475569'; ctx.fillRect(player.x+player.w/2-10,player.y+44,20,10); ctx.fillRect(player.x+player.w/2-26,player.y+54,52,4);
+  }
+  const pulse=0.5+Math.sin(t*3)*0.2; ctx.fillStyle=`rgba(74,222,128,${pulse})`; ctx.beginPath(); ctx.arc(player.x+player.w-10,player.y+42,3,0,7); ctx.fill();
+  ctx.restore();
+}
+function drawItem(it){
+  const skin = currentSkin();
+  ctx.save(); ctx.translate(it.x+20,it.y+20); ctx.rotate(it.rot*0.15);
+  ctx.font='34px sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+  let emoji = skin.shield;
+  if(it.type==='virus') emoji = skin.virus;
+  if(it.type==='file') emoji = skin.file;
+  if(it.type==='bonus') emoji = '⚡';
+  if(it.type==='virus' && skin.id==='corona'){ ctx.font='38px sans-serif'; ctx.shadowColor='rgba(248,113,113,0.9)'; ctx.shadowBlur=10; }
+  else if(it.type==='virus'){ ctx.shadowColor='rgba(239,68,68,0.8)'; ctx.shadowBlur=6; }
+  if(it.type==='bonus'){ ctx.shadowColor='rgba(250,204,21,0.8)'; ctx.shadowBlur=6; }
+  ctx.fillText(emoji,0,0); ctx.restore();
+}
+function update(){ if(gameOver) return; frame++; updateBoostUI(); const diff=getDifficulty(); if(diff.lvl!==level){ level=diff.lvl; document.getElementById('level').textContent=level; document.getElementById('diffBar').style.width=(level*10)+'%'; const labels=['ŁATWO - wirusów mało','Łatwo','Normalnie','Coraz trudniej','Trudno','Bardzo trudno','HARDCORE','MEGA HARD','SZALONE','NIE DO PRZEJŚCIA!']; document.getElementById('diffLabel').textContent=`Trudność: ${labels[level-1]} • LVL ${level}`; sLevel(); } if(keys['ArrowLeft']||keys['a']||keys['A']||holdLeft) player.x-=player.speed; if(keys['ArrowRight']||keys['d']||keys['D']||holdRight) player.x+=player.speed; player.x=Math.max(0,Math.min(400-player.w,player.x)); if(frame%diff.spawnEvery===0) spawnItem(diff); for(let i=items.length-1;i>=0;i--){ let it=items[i]; it.y+=it.speed; it.rot+=0.015; if(it.y+30>player.y && it.y<player.y+player.h+8 && it.x+40>player.x-8 && it.x<player.x+player.w+8){ if(it.type==='virus'){ lives--; combo=1; comboStreak=0; document.getElementById('combo').textContent=combo; updateHearts(); addParticles(it.x+20,it.y+10,'#ef4444',16); sBad(); c.style.transform='translateX(3px)'; setTimeout(()=>c.style.transform='',80); if(lives<=0){ gameOver=true; sOver(); setTimeout(awardCoins, 400); } } else { comboStreak++; if(comboStreak>=6) combo=3; else if(comboStreak>=3) combo=2; else combo=1; let pts=it.type==='bonus'?30:10; let totalMul=getTotalMultiplier(); score+=Math.round(pts*totalMul); document.getElementById('score').textContent=score; document.getElementById('combo').textContent=combo; addParticles(it.x+20,it.y+10,it.type==='bonus'?'#facc15':'#22d3ee',12); if(it.type==='bonus') sBonus(); else sGood(); } items.splice(i,1); continue; } if(it.y>500){ items.splice(i,1); } } particles.forEach(p=>{ p.x+=p.vx; p.y+=p.vy; p.vy+=0.15; p.life--; }); particles=particles.filter(p=>p.life>0); }
+function draw(){ ctx.clearRect(0,0,400,500); drawBackground(); if(gameOver){ ctx.fillStyle='rgba(2,6,23,0.82)'; ctx.fillRect(0,0,400,500); ctx.fillStyle='white'; ctx.textAlign='center'; ctx.font='800 26px sans-serif'; ctx.fillText('💥 KOMPUTER ZAINFEKOWANY!',200,200); ctx.font='16px sans-serif'; ctx.fillText(`Wynik: ${score}  •  Doszedłeś do LVL ${level}`,200,235); ctx.font='13px sans-serif'; ctx.fillStyle='#a5f3fc'; ctx.fillText('Przeżyłeś: '+Math.floor((Date.now()-startTime)/1000)+' sekund',200,260); ctx.font='800 15px sans-serif'; ctx.fillStyle='#22d3ee'; ctx.fillText('Naciśnij SPACJĘ, żeby naprawić PC',200,295); ctx.fillStyle='white'; ctx.font='13px sans-serif'; ctx.fillText('Tip: łap antywirusy i pliki, unikaj wirusów',200,320); ctx.fillText('Obserwuj kanał ⬇️ pod grą!',200,342); ctx.textAlign='left'; } else { drawPlayer(); items.forEach(drawItem); particles.forEach(p=>{ ctx.fillStyle=p.col; ctx.globalAlpha=p.life/32; ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,7); ctx.fill(); ctx.globalAlpha=1; }); if(boostActive && Date.now()<boostUntil){ ctx.fillStyle='rgba(240,171,252,0.9)'; ctx.font='bold 12px sans-serif'; ctx.textAlign='center'; ctx.fillText(`⚡ BOOST x2 - ${Math.ceil((boostUntil-Date.now())/1000)}s`,200,18); ctx.textAlign='left'; } } requestAnimationFrame(()=>{ update(); draw(); }); }
+draw();
+</script>
+</body>
+</html>
