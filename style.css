@@ -1,0 +1,59 @@
+* { box-sizing: border-box; }
+body { margin:0; min-height:100vh; background: linear-gradient(180deg,#020617,#0f172a); display:flex; flex-direction:column; align-items:center; font-family:'Segoe UI',sans-serif; color:white; padding:10px; }
+.card { background: rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); border-radius:18px; padding:12px 14px; width:100%; max-width:430px; }
+.top { display:flex; justify-content:space-between; align-items:center; gap:8px; }
+.logo { font-size:19px; font-weight:900; line-height:1.05; }
+.logo span { color:#22d3ee; }
+.stats { display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-end; }
+.pill { background:#fff; color:#111; border-radius:999px; padding:6px 10px; font-weight:800; font-size:13px; }
+.pill.combo { background:#a5f3fc; }
+.pill.level { background:#fde68a; }
+.pill.boost { background:#f0abfc; display:none; }
+.pill.perm { background:#86efac; display:none; }
+.pill.coins { background:#fde047; }
+.hearts { font-size:16px; letter-spacing:2px; margin-top:6px; }
+.bar-wrap { background:rgba(255,255,255,0.15); height:8px; border-radius:99px; margin-top:8px; overflow:hidden; }
+.bar { height:100%; background:linear-gradient(90deg,#22d3ee,#a855f7,#ef4444); width:10%; transition:width 0.3s; }
+.bar-label { font-size:11px; opacity:0.7; margin-top:4px; text-align:center; }
+.reward { margin-top:10px; background:linear-gradient(90deg, rgba(250,204,21,0.2), rgba(240,171,252,0.2)); border:1px solid rgba(250,204,21,0.5); border-radius:12px; padding:10px 12px; text-align:center; }
+.reward h3 { margin:0; font-size:14px; }
+.reward p { margin:4px 0 8px; font-size:12px; opacity:0.85; line-height:1.4; }
+.reward button { background:#facc15; color:#111; padding:9px 16px; border-radius:999px; border:none; font-weight:900; cursor:pointer; font-size:13px; width:100%; }
+.reward button:disabled { background:#52525b; color:#a1a1aa; cursor:not-allowed; }
+.reward .streak { display:flex; gap:4px; justify-content:center; margin:6px 0; }
+.reward .day { width:32px; height:32px; border-radius:8px; background:rgba(255,255,255,0.15); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; }
+.reward .day.done { background:#22c55e; color:white; }
+.reward .day.today { border:2px solid #facc15; }
+canvas { width:100%; max-width:400px; height:auto; aspect-ratio:4/5; display:block; margin:10px auto 0; background: linear-gradient(180deg,#0b1120 0%, #1e293b 45%, #0f172a 100%); border-radius:14px; }
+.controls { display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; justify-content:center; }
+button, .wa-btn { padding:10px 16px; border-radius:999px; border:none; font-weight:800; cursor:pointer; font-size:14px; text-decoration:none; display:inline-block; text-align:center; }
+.primary { background:#22d3ee; color:#111; }
+.ghost { background:rgba(255,255,255,0.12); color:white; border:1px solid rgba(255,255,255,0.2); }
+.wa-btn { background:#25D366; color:#fff; }
+.wa-box { margin-top:12px; background:rgba(37,211,102,0.12); border:1px solid rgba(37,211,102,0.35); border-radius:12px; padding:10px 12px; text-align:center; }
+.wa-box p { margin:0 0 8px; font-size:13px; }
+.hint { font-size:12.5px; opacity:0.75; text-align:center; line-height:1.5; margin:8px 0 0; }
+.touch { display:none; gap:8px; margin-top:10px; width:100%; }
+.touch button { flex:1; padding:16px; font-size:20px; background:rgba(255,255,255,0.12); color:white; border:1px solid rgba(255,255,255,0.25); border-radius:12px; }
+.shop { margin-top:12px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); border-radius:14px; padding:12px; }
+.shop h3 { margin:0 0 4px; font-size:15px; text-align:center; }
+.shop-info { text-align:center; font-size:12px; opacity:0.85; margin-bottom:10px; line-height:1.5; }
+.shop-info b { color:#fde047; }
+.skin-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.skin { background:rgba(255,255,255,0.08); border:2px solid rgba(255,255,255,0.12); border-radius:12px; padding:10px 8px; text-align:center; }
+.skin.equipped { border-color:#22c55e; background:rgba(34,197,94,0.15); }
+.skin .icon { font-size:28px; }
+.skin .name { font-size:12px; font-weight:800; margin:4px 0 2px; }
+.skin .price { font-size:11px; opacity:0.8; margin-bottom:6px; }
+.skin .desc { font-size:10px; opacity:0.7; margin-bottom:6px; line-height:1.3; }
+.skin button { width:100%; padding:7px; font-size:12px; border-radius:999px; border:none; font-weight:800; cursor:pointer; }
+.skin button.buy { background:#facc15; color:#111; }
+.skin button.equip { background:#22d3ee; color:#111; }
+.skin button.on { background:#22c55e; color:white; }
+.skin button:disabled { background:#52525b; color:#a1a1aa; }
+.sponsor { margin:10px 0 0; background:linear-gradient(90deg, rgba(168,85,247,0.25), rgba(34,211,238,0.25)); border:1px solid rgba(168,85,247,0.5); border-radius:12px; padding:10px 12px; text-align:center; }
+.sponsor span { font-size:11px; opacity:0.8; letter-spacing:1px; }
+.sponsor a { display:block; color:white; font-weight:900; font-size:16px; text-decoration:none; margin-top:2px; }
+.sponsor a:hover { text-decoration:underline; }
+.sponsor small { font-size:11px; opacity:0.7; }
+@media (max-width:600px){ .touch{display:flex;} }
